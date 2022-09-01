@@ -10,6 +10,7 @@ import common_func
 import Train_func
 
 
+# 训练
 def train(x, y, idx_tra, idx_vld,h1, h2, lrn_rt,w_decay,ground_truth):
     model_1 = models.AutoEncoder(in_dim=127, hid_dim1=h1, hid_dim2=h2)
     model_2 = models.AutoEncoder(in_dim=127, hid_dim1=h1, hid_dim2=h2)
@@ -33,7 +34,7 @@ if __name__ == '__main__':
     use_gpu = torch.cuda.is_available()
 
     # Step1 : Read Data
-    path_name = '/data/meiqi.hu/PycharmProjects/HyperspectralACD/AE/ACDA/'
+    path_name = 'D:/Code/B_HSI/AnomalyDetection/ACDA/'
     EX, img_2, train_smp, valid_smp = 'EX1', 'img_2', 'un_idx_train1', 'un_idx_valid1'
     ground_truth = Image.open(path_name + 'ref_EX1.bmp')
     if EX == 'EX2':
