@@ -5,8 +5,22 @@ import numpy as np
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
 
-
 # 训练预测
+'''
+train_predict(x, y, model_1, idx_tra, idx_vld, epoch, bth_sz, lrn_rt, w_decay, use_gpu)
+x_3d：输入的x
+y_3d：输入的y
+model：模型
+un_idx_train：
+un_idx_valid：
+epoch：时期
+batch_sz：批次大小
+learn_rate：学习率
+w_decay：衰减率
+use_gpu：是否使用gpu
+'''
+
+
 def train_predict(x_3d, y_3d, model, un_idx_train, un_idx_valid,
                   epoch, batch_sz, learn_rate, w_decay, use_gpu):
     # 1、准备数据
@@ -53,7 +67,6 @@ def train_predict(x_3d, y_3d, model, un_idx_train, un_idx_valid,
     for _epoch in range(0, epoch):
         # 训练模型
         model.train()
-
         tra_ave_ls = 0
         # 训练模型参数
         for i, data in enumerate(data_loader):
@@ -107,5 +120,5 @@ def train_predict(x_3d, y_3d, model, un_idx_train, un_idx_valid,
     loss_m1 = np.sum(loss.detach().numpy(), axis=1).reshape(img_height, img_width)  # axis=1,[num, 1]
     prediction_y = prediction_y.detach().numpy().transpose(). \
         reshape([img_channel, img_height, img_width, ])
-
+    # 计算预测图像和相应的预期图像之间的均方误差以获得损耗图
     return model, loss_m1, prediction_y, Tra_ls, Val_ls
