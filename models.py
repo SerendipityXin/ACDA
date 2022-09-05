@@ -26,6 +26,8 @@ class AutoEncoder(nn.Module):
             nn.ReLU(),
             nn.Linear(hid_dim1, hid_dim2, bias=True),
             nn.ReLU(),
+            nn.Linear(hid_dim1, hid_dim2, bias=True),
+            nn.ReLU(),
         )
         # 解码器
         self.decoder = nn.Sequential(

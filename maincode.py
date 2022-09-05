@@ -8,6 +8,8 @@ import os
 import models
 import common_func
 import Train_func
+import spectral
+import matplotlib.pyplot as plt
 
 use_gpu = torch.cuda.is_available()  # true
 
@@ -56,9 +58,9 @@ if __name__ == '__main__':
     use_gpu = torch.cuda.is_available()
     if use_gpu:
         print("-----------------------使用gpu中--------------------------------")
-    # Step1 : Read Data读取数据
+    '''Step1 : Read Data读取数据'''
     path_name = 'D:/Code/B_HSI/AnomalyDetection/ACDA/'
-    # EX已经赋值为EX1，怎么还要加if EX == 'EX2'
+    # 可以切换不同的数据集测试
     EX, img_2, train_smp, valid_smp = 'EX1', 'img_2', 'un_idx_train1', 'un_idx_valid1'
     ground_truth = Image.open(path_name + 'ref_EX1.bmp')
     if EX == 'EX2':
@@ -68,12 +70,19 @@ if __name__ == '__main__':
     # img_data : img_1,img_2,img_3(de-striping, noise-whitening and spectrally binning)去条化、噪声白化和频谱分箱
     data_filename = 'img_data.mat'
     data = sio.loadmat(path_name + data_filename)
+    # 显示图像
+    plt.subplot(1, 2, 1)
+    plt.imshow(data['img_1'][:, :, 100])
+    plt.subplot(1, 2, 2)
+    plt.imshow(data['img_2'][:, :, 20])
+    plt.show()
+
     img_x0 = data['img_1']
     img_y0 = data['img_2']
-    # 改变索引值为何？
-    input_x = img_x0.transpose((2, 1, 0))
-    input_y = img_y0.transpose((2, 1, 0))
-    # read pre-train samples from pretraining result of USFA
+    '''    input_x = img_x0.transpose(2, 1, 0)改变索引值'''
+    input_x = img_x0.transpose(2, 1, 0)
+    input_y = img_y0.transpose(2, 1, 0)
+    # read pre-train samples from pre-training result of USFA
     # for different training strategy(only replace the training samples)
     TrainSmp_filename = 'groundtruth_samples.mat'
     # groundtruth_samples random_samples pretrain_samples
@@ -84,7 +93,7 @@ if __name__ == '__main__':
     un_idx_valid = TrainSmp[valid_smp].squeeze()
     img_channel, img_height, img_width = input_x.shape
 
-    # Step2 : for experiemntal result 实验结果
+    '''Step2 : for experiemntal result 实验结果'''
     # 用0填充
     Loss_result = np.zeros([img_height, img_width], dtype=float)
     # 超参数
